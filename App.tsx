@@ -1,42 +1,71 @@
-import React, {useRef, useEffect} from 'react';
-import {View, Button} from 'react-native';
-import {WebView} from 'react-native-webview';
+// import React, {useRef} from 'react';
+// import {SafeAreaView, Button, Alert} from 'react-native';
+// import {WebView} from 'react-native-webview';
 
-const MyWebViewComponent = () => {
-  const webViewRef = useRef(null);
+// const App = () => {
+//   const webviewRef = useRef(null);
 
-  // Function to send a message to the WebView
-  const sendMessageToWebView = () => {
-    if (webViewRef.current) {
-      webViewRef.current.postMessage('Hello from React Native!');
-    }
+//   // Function to handle messages from the WebView
+//   const handleMessage = event => {
+//     const message = event.nativeEvent.data;
+//     Alert.alert('Message from WebView', message);
+//     console.log('Message from WebView', message);
+//   };
+
+//   // Function to send message to the WebView
+//   const sendMessageToWeb = () => {
+//     webviewRef.current.postMessage('Hello from React Native!');
+//   };
+
+//   return (
+//     <SafeAreaView style={{flex: 1}}>
+//       <Button title="Send Message to WebView" onPress={sendMessageToWeb} />
+//       <WebView
+//         ref={webviewRef}
+//         source={{uri: 'http://10.0.2.2:5173'}} // Change to your web server URL
+//         onMessage={handleMessage}
+//       />
+//     </SafeAreaView>
+//   );
+// };
+
+// export default App;
+
+// App.tsx
+import React, {useRef} from 'react';
+import {SafeAreaView, Button, Alert} from 'react-native';
+import {WebView, WebViewMessageEvent} from 'react-native-webview';
+
+const App: React.FC = () => {
+  const webviewRef = useRef<WebView>(null);
+
+  // Handle messages from the WebView
+  const handleMessage = (event: WebViewMessageEvent) => {
+    const message = event.nativeEvent.data;
+    Alert.alert('Message from WebView', message);
+    console.log('Message from WebView', message);
   };
 
-  // Handle messages received from the WebView
-  const onMessage = (event: {nativeEvent: {data: any}}) => {
-    const messageFromWebView = event.nativeEvent.data;
-    console.log('Message from WebView:', messageFromWebView);
-    // Handle the message here (update state, call a function, etc.)
-  };
-
-  useEffect(() => {
-    if (webViewRef.current) {
-      webViewRef.current.injectJavaScript(`
-        window.ReactNativeWebView.postMessage('Initial message from WebView');
-      `);
+  // Send a message to the WebView
+  const sendMessageToWeb = () => {
+    if (webviewRef.current) {
+      console.log('Sending message to WebView');
+      webviewRef.current.postMessage('Hello from React Native!');
+    } else {
+      console.error('WebView reference is null.');
     }
-  }, []);
+  };
 
   return (
-    <View style={{flex: 1}}>
-      <Button title="Send Message to WebView" onPress={sendMessageToWebView} />
+    <SafeAreaView style={{flex: 1}}>
+      <Button title="Send Message to WebView" onPress={sendMessageToWeb} />
       <WebView
-        ref={webViewRef}
-        source={{uri: 'https://react-native-webview-poc-web1.vercel.app/'}}
-        onMessage={onMessage}
+        ref={webviewRef}
+        source={{uri: 'http://10.0.2.2:5173'}} // Change to your web server URL
+        onMessage={handleMessage}
       />
-    </View>
+    </SafeAreaView>
   );
 };
 
-export default MyWebViewComponent;
+export default App;
