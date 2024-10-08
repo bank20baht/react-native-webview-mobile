@@ -45,9 +45,10 @@ const App: React.FC = () => {
       <Button title="Send Message to WebView" onPress={sendMessageToWeb} />
       <WebView
         ref={webViewRef}
-        source={{uri: 'http://10.0.2.2:5173'}} // Change to your web server URL
+        source={{uri: 'http://10.0.2.2:5500'}} // Replace with your web server URL
         onMessage={handleMessage}
         onNavigationStateChange={navState => setCanGoBack(navState.canGoBack)}
+        injectedJavaScript={`window.postMessage(JSON.stringify({message: "hello"}))`}
       />
     </SafeAreaView>
   );
